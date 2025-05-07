@@ -1,0 +1,23 @@
+import matplotlib.pyplot as plt
+
+plt.scatter(y_test, rf_preds, alpha=0.5, label='Random Forest')
+plt.scatter(y_test, xgb_preds, alpha=0.5, label='XGBoost', color='orange')
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='black', linestyle='--')
+plt.xlabel('Actual Bird Counts')
+plt.ylabel('Predicted Bird Counts')
+plt.legend()
+plt.title('Predicted vs Actual Bird Counts')
+plt.show()
+
+"Residuals"
+rf_residuals = y_test - rf_preds
+xgb_residuals = y_test - xgb_preds
+
+plt.scatter(rf_preds, rf_residuals, alpha=0.5, label='RF Residuals')
+plt.scatter(xgb_preds, xgb_residuals, alpha=0.5, label='XGB Residuals', color='orange')
+plt.axhline(0, color='black', linestyle='--')
+plt.xlabel('Predicted Counts')
+plt.ylabel('Residuals')
+plt.title('Residual Plot')
+plt.legend()
+plt.show()

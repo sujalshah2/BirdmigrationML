@@ -1,0 +1,59 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv('bird_migration.csv')  # Adjust filename if needed
+
+# Preview
+df.head()
+
+
+"Bar plot- Seasonal Distribution of Bird Counts"
+plt.figure(figsize=(8,6))
+sns.barplot(data=df, x='Season', y='Observation Count', estimator='sum', ci=None,
+            order=['Spring', 'Summer', 'Fall', 'Winter'], palette='viridis')
+plt.title('Total Bird Observations by Season')
+plt.ylabel('Total Observation Count')
+plt.xlabel('Season')
+plt.tight_layout()
+plt.show()
+
+"Heatmap – Bird Density by Latitude and Longitude"
+# Aggregate by location
+heatmap_data = df.groupby(['Latitude', 'Longitude'])['Observation Count'].sum().reset_index()
+
+# Create pivot table for heatmap
+pivot = heatmap_data.pivot_table(index='Latitude', columns='Longitude', values='Observation Count', fill_value=0)
+
+plt.figure(figsize=(12,8))
+sns.heatmap(pivot, cmap='YlGnBu', cbar_kws={'label': 'Observation Count'})
+plt.title('Heatmap of Bird Observations by Location')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.show()
+
+"Boxplots – Variance in Counts Across Flyways and Species"
+plt.figure(figsize=(12,6))
+sns.boxplot(data=df, x='Flyway', y='Observation Count', palette='Set2')
+plt.title('Bird Count Variance by Flyway')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+"Boxplot by species"
+plt.figure(figsize=(14,6))
+top_species = df['Species'].value_counts().nlargest(10).index
+sns.boxplot(data=df[df['Species'].isin(top_species)], x='Species', y='Observation Count', palette='Set3')
+plt.title('Bird Count Variance for Top 10 Species')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+"Pairplot – Relationships Between Environmental Variables"
+# Subset of relevant variables
+subset = df[['Temperature', 'Wind Speed', 'Latitude', 'Observation Count']]
+sns.pairplot(subset, kind='scatter', diag_kind='kde', plot_kws={'alpha': 0.5})
+plt.suptitle('Environmental Variables vs. Observation Count', y=1.02)
+plt.show()
+
